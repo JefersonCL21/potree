@@ -5,13 +5,45 @@
     <meta name="description" content="">
     <meta name="author" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>Potree Viewer</title>
+    <title>Nuvem de pontos</title>
 
     <link rel="stylesheet" type="text/css" href="https://storage.googleapis.com/senha_gee/libs/potree/potree.css">
     <link rel="stylesheet" type="text/css" href="https://storage.googleapis.com/senha_gee/libs/jquery-ui/jquery-ui.min.css">
     <link rel="stylesheet" type="text/css" href="https://storage.googleapis.com/senha_gee/libs/openlayers3/ol.css">
     <link rel="stylesheet" type="text/css" href="https://storage.googleapis.com/senha_gee/libs/spectrum/spectrum.css">
     <link rel="stylesheet" type="text/css" href="https://storage.googleapis.com/senha_gee/libs/jstree/themes/mixed/style.css">
+
+    <style>
+        .potree_footer {
+            display: none;
+        }
+        .button-container {
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 1000;
+        }
+        .button-container button {
+            margin: 0 5px;
+            padding: 10px 20px;
+            border: 2px solid transparent;
+            background-color: #FFF;
+            color: white;
+            cursor: pointer;
+            border-radius: 5px;
+			color: #000;
+			
+        }
+        .button-container button.active {
+            background-color: #28A745; /* Borda verde para indicar que o botão está ativo */
+        }
+        .button-container button:hover {
+            background-color: lightblue;
+			
+        }
+    </style>
+
 </head>
 
 <body>
@@ -33,7 +65,15 @@
     
     <div class="potree_container" style="position: absolute; width: 100%; height: 100%; left: 0px; top: 0px; ">
         <div id="potree_render_area" style="background-image: url('../build/potree/resources/images/background.jpg');"></div>
-        <div id="potree_sidebar_container"> </div>
+        
+        <div class="button-container">
+            <button id="elevationButton" class="active" onclick="setElevationColor()">Exibir Elevação</button>
+            <button id="rgbButton" onclick="setRGBColor()">Exibir RGB</button>
+        </div>
+
+        <!-- Para não exibir a sidebar -->
+        <!--<div id="potree_sidebar_container"> </div>-->
+        
     </div>
     
     <script>
@@ -61,11 +101,33 @@
             material.shape = Potree.PointShape.CIRCLE;
 
             // Configurar o material para usar a elevação como cor
-			material.activeAttributeName = "elevation";
-			material.gradient = Potree.Gradients.SPECTRAL;
+            material.activeAttributeName = "elevation";
+            material.gradient = Potree.Gradients.SPECTRAL;
             scene.addPointCloud(pointcloud);
             viewer.fitToScreen();
         });
+
+        function setElevationColor() {
+            let pointcloud = viewer.scene.pointclouds[0];
+            let material = pointcloud.material;
+            material.activeAttributeName = "elevation";
+            material.gradient = Potree.Gradients.SPECTRAL;
+
+            // Atualizar o botão ativo
+            document.getElementById("elevationButton").classList.add("active");
+            document.getElementById("rgbButton").classList.remove("active");
+        }
+
+        function setRGBColor() {
+            let pointcloud = viewer.scene.pointclouds[0];
+            let material = pointcloud.material;
+            material.activeAttributeName = "rgba";
+			material.minSize = 0.5;
+
+            // Atualizar o botão ativo
+            document.getElementById("elevationButton").classList.remove("active");
+            document.getElementById("rgbButton").classList.add("active");
+        }
     </script>
 </body>
 </html>
