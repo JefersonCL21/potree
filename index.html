@@ -58,8 +58,11 @@
             let material = pointcloud.material;
             material.size = 1;
             material.pointSizeType = Potree.PointSizeType.ADAPTIVE;
-            material.shape = Potree.PointShape.SQUARE;
-            material.activeAttributeName = "rgba";
+            material.shape = Potree.PointShape.CIRCLE;
+
+            // Configurar o material para usar a elevação como cor
+			material.activeAttributeName = "elevation";
+			material.gradient = Potree.Gradients.SPECTRAL;
             scene.addPointCloud(pointcloud);
             viewer.fitToScreen();
         });
